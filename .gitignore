@@ -1,0 +1,14 @@
+.venv/*
+.vscode/*
+deepfake_audio/*
+real_audio/*
+# Ignore Python cache files
+__pycache__/
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+# Ignore logs   and temporary files
+*.log
+*.tmp
+# Ignore model files
+*.h5
+*.pkl
