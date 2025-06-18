@@ -2,6 +2,7 @@ import os
 import glob
 import librosa
 import numpy as np
+import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
@@ -16,7 +17,23 @@ def extract_mfcc_features(audio_path, n_mfcc=13, n_fft=2048, hop_length=512):
         return None
 
     mfccs = librosa.feature.mfcc(y=audio_data, sr=sr, n_mfcc=n_mfcc, n_fft=n_fft, hop_length=hop_length)
-    return np.mean(mfccs.T, axis=0)
+    mfcc_features = np.mean(mfccs.T, axis=0)
+    
+    # Create a DataFrame with MFCC features
+    feature_names = [f'MFCC_{i+1}' for i in range(n_mfcc)]
+    df = pd.DataFrame([mfcc_features], columns=feature_names)
+    
+    # Add filename and label columns
+    df['filename'] = os.path.basename(audio_path)
+    
+    # Save to CSV (append mode)
+    csv_filename = 'mfcc_features.csv'
+    if not os.path.exists(csv_filename):
+        df.to_csv(csv_filename, index=False)
+    else:
+        df.to_csv(csv_filename, mode='a', header=False, index=False)
+    
+    return mfcc_features
 
 def create_dataset(directory, label):
     X, y = [], []
